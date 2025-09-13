@@ -1,0 +1,11 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "java -jar build/libs/DatingLife-1.0-SNAPSHOT.jar"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+
+[env]
+SPRING_PROFILES_ACTIVE = "prod"
+JWT_SECRET = "myVeryLongSecretKeyThatIsSecureEnoughForJWTGeneration12345"

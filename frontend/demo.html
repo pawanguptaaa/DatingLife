@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatingLife - Company Dating App Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        .success {
+            background-color: #28a745;
+        }
+        .success:hover {
+            background-color: #218838;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .user-card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .auth-section, .app-section {
+            margin-bottom: 30px;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <h1>DatingLife - Company Dating App</h1>
+            <p>Connect with colleagues in your department</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <h2>Authentication</h2>
+            
+            <!-- Registration Form -->
+            <div id="registerForm">
+                <h3>Create Account</h3>
+                <div class="form-group">
+                    <label for="regUsername">Username:</label>
+                    <input type="text" id="regUsername" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" placeholder="Enter password">
+                </div>
+                <div class="form-group">
+                    <label for="regFirstName">First Name:</label>
+                    <input type="text" id="regFirstName" placeholder="Enter first name">
+                </div>
+                <div class="form-group">
+                    <label for="regLastName">Last Name:</label>
+                    <input type="text" id="regLastName" placeholder="Enter last name">
+                </div>
+                <div class="form-group">
+                    <label for="regDepartment">Department:</label>
+                    <input type="text" id="regDepartment" placeholder="e.g., Engineering, Marketing">
+                </div>
+                <div class="form-group">
+                    <label for="regJobTitle">Job Title:</label>
+                    <input type="text" id="regJobTitle" placeholder="e.g., Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label for="regGender">Gender:</label>
+                    <select id="regGender">
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="regBio">Bio:</label>
+                    <textarea id="regBio" placeholder="Tell us about yourself" rows="3"></textarea>
+                </div>
+                <button onclick="register()">Create Account</button>
+                <button onclick="showLogin()">Already have account? Login</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="hidden">
+                <h3>Login</h3>
+                <div class="form-group">
+                    <label for="loginUsername">Username:</label>
+                    <input type="text" id="loginUsername" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password">
+                </div>
+                <button onclick="login()">Login</button>
+                <button onclick="showRegister()">Don't have account? Register</button>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="appSection" class="app-section hidden">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button onclick="loadPotentialMatches()">Discover People</button>
+                <button onclick="loadMyMatches()">My Matches</button>
+                <button onclick="logout()" class="danger">Logout</button>
+            </div>
+
+            <!-- Current User Display -->
+            <div id="currentUser"></div>
+
+            <!-- Potential Matches -->
+            <div id="potentialMatches"></div>
+
+            <!-- My Matches -->
+            <div id="myMatches"></div>
+        </div>
+
+        <!-- Response Display -->
+        <div id="response" class="response hidden"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = null;
+
+        // Show response message
+        function showResponse(message, isError = false) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = message;
+            responseDiv.className = isError ? 'response error' : 'response success';
+            responseDiv.classList.remove('hidden');
+            setTimeout(() => responseDiv.classList.add('hidden'), 5000);
+        }
+
+        // API Helper
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+
+            const config = {
+                method,
+                headers,
+            };
+
+            if (body) {
+                config.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'API Error');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // Authentication Functions
+        async function register() {
+            const userData = {
+                username: document.getElementById('regUsername').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                firstName: document.getElementById('regFirstName').value,
+                lastName: document.getElementById('regLastName').value,
+                department: document.getElementById('regDepartment').value,
+                jobTitle: document.getElementById('regJobTitle').value,
+                gender: document.getElementById('regGender').value,
+                bio: document.getElementById('regBio').value,
+                interestedInGenders: ['MALE', 'FEMALE', 'OTHER'] // Interested in all by default
+            };
+
+            try {
+                await apiCall('/auth/signup', 'POST', userData);
+                showResponse('Registration successful! Please login.');
+                showLogin();
+            } catch (error) {
+                showResponse(`Registration failed: ${error.message}`, true);
+            }
+        }
+
+        async function login() {
+            const credentials = {
+                username: document.getElementById('loginUsername').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const response = await apiCall('/auth/signin', 'POST', credentials);
+                authToken = response.accessToken;
+                localStorage.setItem('authToken', authToken);
+                
+                await loadCurrentUser();
+                showApp();
+                showResponse('Login successful!');
+            } catch (error) {
+                showResponse(`Login failed: ${error.message}`, true);
+            }
+        }
+
+        async function loadCurrentUser() {
+            try {
+                currentUser = await apiCall('/users/profile');
+                document.getElementById('currentUser').innerHTML = `
+                    <div class="user-card">
+                        <h3>Welcome, ${currentUser.firstName} ${currentUser.lastName}!</h3>
+                        <p><strong>Department:</strong> ${currentUser.department || 'Not specified'}</p>
+                        <p><strong>Job Title:</strong> ${currentUser.jobTitle || 'Not specified'}</p>
+                        <p><strong>Bio:</strong> ${currentUser.bio || 'No bio yet'}</p>
+                    </div>
+                `;
+            } catch (error) {
+                showResponse(`Failed to load profile: ${error.message}`, true);
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            showAuth();
+            showResponse('Logged out successfully!');
+        }
+
+        // App Functions
+        async function loadPotentialMatches() {
+            try {
+                const matches = await apiCall('/users/matches');
+                displayPotentialMatches(matches);
+            } catch (error) {
+                showResponse(`Failed to load potential matches: ${error.message}`, true);
+            }
+        }
+
+        function displayPotentialMatches(matches) {
+            const container = document.getElementById('potentialMatches');
+            document.getElementById('myMatches').innerHTML = '';
+            
+            if (matches.length === 0) {
+                container.innerHTML = '<p>No potential matches found in your department.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <h3>Potential Matches (${matches.length})</h3>
+                <div class="matches-container">
+                    ${matches.map(user => `
+                        <div class="user-card">
+                            <h4>${user.firstName} ${user.lastName}</h4>
+                            <p><strong>Job:</strong> ${user.jobTitle || 'Not specified'}</p>
+                            <p><strong>Department:</strong> ${user.department || 'Not specified'}</p>
+                            <p><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
+                            <div style="text-align: center; margin-top: 15px;">
+                                <button class="success" onclick="likeUser(${user.id})">❤️ Like</button>
+                                <button class="danger" onclick="rejectUser(${user.id})">❌ Pass</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function likeUser(userId) {
+            try {
+                const response = await apiCall(`/matches/like/${userId}`, 'POST');
+                showResponse(response.message);
+                if (response.isMatch) {
+                    showResponse('🎉 It\'s a match! You can now message each other.');
+                }
+                loadPotentialMatches(); // Refresh the list
+            } catch (error) {
+                showResponse(`Failed to like user: ${error.message}`, true);
+            }
+        }
+
+        async function rejectUser(userId) {
+            try {
+                await apiCall(`/matches/reject/${userId}`, 'POST');
+                showResponse('User rejected');
+                loadPotentialMatches(); // Refresh the list
+            } catch (error) {
+                showResponse(`Failed to reject user: ${error.message}`, true);
+            }
+        }
+
+        async function loadMyMatches() {
+            try {
+                const matches = await apiCall('/matches/my-matches');
+                displayMyMatches(matches);
+            } catch (error) {
+                showResponse(`Failed to load matches: ${error.message}`, true);
+            }
+        }
+
+        function displayMyMatches(matches) {
+            const container = document.getElementById('myMatches');
+            document.getElementById('potentialMatches').innerHTML = '';
+            
+            if (matches.length === 0) {
+                container.innerHTML = '<p>No matches yet. Keep swiping to find your perfect match!</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <h3>My Matches (${matches.length})</h3>
+                <div class="matches-container">
+                    ${matches.map(match => {
+                        const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
+                        return `
+                            <div class="user-card">
+                                <h4>${otherUser.firstName} ${otherUser.lastName}</h4>
+                                <p><strong>Job:</strong> ${otherUser.jobTitle || 'Not specified'}</p>
+                                <p><strong>Department:</strong> ${otherUser.department || 'Not specified'}</p>
+                                <p><strong>Bio:</strong> ${otherUser.bio || 'No bio'}</p>
+                                <p><small>Matched on: ${new Date(match.matchedAt || match.createdAt).toLocaleDateString()}</small></p>
+                                <div style="text-align: center; margin-top: 15px;">
+                                    <button onclick="sendMessage(${otherUser.id}, '${otherUser.firstName}')">💬 Send Message</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        async function sendMessage(recipientId, recipientName) {
+            const message = prompt(`Send a message to ${recipientName}:`);
+            if (!message) return;
+
+            try {
+                await apiCall('/messages/send', 'POST', {
+                    recipientId: recipientId,
+                    content: message
+                });
+                showResponse('Message sent successfully!');
+            } catch (error) {
+                showResponse(`Failed to send message: ${error.message}`, true);
+            }
+        }
+
+        // UI Navigation
+        function showRegister() {
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showAuth() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+        }
+
+        function showApp() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+        }
+
+        // Initialize
+        if (authToken) {
+            loadCurrentUser().then(() => {
+                showApp();
+                loadPotentialMatches();
+            });
+        } else {
+            showAuth();
+        }
+    </script>
+</body>
+</html>
